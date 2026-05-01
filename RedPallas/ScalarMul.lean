@@ -72,6 +72,18 @@ theorem fqSmul_one (P : Pallas.toAffine.Point) :
     (1 : Pasta.Fq) ⬝ P = P := by
   simp [fqSmul_def, ZMod.val_one]
 
+/-- Scalar multiplication by a negated scalar negates the result. -/
+theorem fqSmul_neg (s : Pasta.Fq) (P : Pallas.toAffine.Point) :
+    (-s) ⬝ P = -(s ⬝ P) := by
+  have h : s ⬝ P + (-s) ⬝ P = 0 := by
+    rw [← fqSmul_add]; simp
+  exact eq_neg_of_add_eq_zero_right h
+
+/-- Scalar multiplication by a difference distributes. -/
+theorem fqSmul_sub (a b : Pasta.Fq) (P : Pallas.toAffine.Point) :
+    (a - b) ⬝ P = a ⬝ P - b ⬝ P := by
+  rw [sub_eq_add_neg, fqSmul_add, fqSmul_neg, ← sub_eq_add_neg]
+
 end
 
 end RedPallas

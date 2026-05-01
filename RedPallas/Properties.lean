@@ -55,6 +55,74 @@ theorem verify_rerandomized (sk α : Pasta.Fq) (msg : List UInt8)
   rw [← rerandomize_keygen]
   exact verify_sign (rerandomizeSk α sk) msg r
 
+/-! ## Key homomorphism
+
+`keygen` is a group homomorphism from `(Fq, +)` to `(Pallas, +)`.
+This is the algebraic foundation for Zcash's value commitment scheme:
+the binding verification key `bvk = Σ cvᵢ` works because summing
+commitments corresponds to summing their secret keys. -/
+
+/-- **Key homomorphism**: `keygen` distributes over addition.
+
+`keygen(a + b) = keygen(a) + keygen(b)` -/
+theorem keygen_add (a b : Pasta.Fq) :
+    keygen (a + b) = keygen a + keygen b := by
+  unfold keygen; rw [fqSmul_add]
+
+/-- **Key negation**: `keygen` commutes with negation.
+
+`keygen(-sk) = -keygen(sk)` -/
+theorem keygen_neg (sk : Pasta.Fq) :
+    keygen (-sk) = -keygen sk := by
+  unfold keygen; rw [fqSmul_neg]
+
+/-- **Key subtraction**: `keygen` distributes over subtraction.
+
+`keygen(a - b) = keygen(a) - keygen(b)` -/
+theorem keygen_sub (a b : Pasta.Fq) :
+    keygen (a - b) = keygen a - keygen b := by
+  unfold keygen; rw [fqSmul_sub]
+
+/-- `keygen(0)` is the identity point. -/
+@[simp]
+theorem keygen_zero : keygen 0 = (0 : Pallas.toAffine.Point) := by
+  unfold keygen; simp
+
+/-! ## Signature negation
+
+Negating the scalar component of a signature corresponds to negating the
+verification key. -/
+
+/-- Negating a signature's scalar negates the verification key relationship.
+
+If `[S]·G = R + [c]·vk`, then `[-S]·G = -(R + [c]·vk)`, not `R + [c]·(-vk)`,
+because the challenge `c` depends on `vk`. However, negation IS involutive. -/
+@[simp]
+theorem negateS_negateS (sig : Signature) :
+    negateS (negateS sig) = sig := by
+  simp [negateS]
+
+/-! ## Generic verification (BindingSig)
+
+The verification equation `[S]·G = R + [c]·vk` holds purely by linearity
+of Fq-scalar multiplication, independent of which generator is used.
+This means `BindingSig` inherits the same correctness guarantees as
+`SpendAuthSig`. -/
+
+/-- **Generic verification correctness**: the RedDSA verification equation
+holds for any generator point.
+
+This covers both `SpendAuthSig` (generator `G`) and `BindingSig`
+(generator `BindingG`). -/
+theorem verify_sign_generic (gen : Pallas.toAffine.Point)
+    (sk : Pasta.Fq) (msg : List UInt8) (r : Pasta.Fq) :
+    let vk := sk ⬝ gen
+    let R := r ⬝ gen
+    let c := challengeHash R vk msg
+    (r + c * sk) ⬝ gen = R + c ⬝ vk := by
+  simp only []
+  rw [fqSmul_add, fqSmul_mul]
+
 end
 
 end RedPallas

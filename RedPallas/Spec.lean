@@ -71,6 +71,24 @@ def rerandomizeKey (α : Pasta.Fq) (vk : Pallas.toAffine.Point) :
 def rerandomizeSk (α : Pasta.Fq) (sk : Pasta.Fq) : Pasta.Fq :=
   sk + α
 
+/-- Negate the scalar component of a signature: `negateS(R, S) = (R, -S)`. -/
+def negateS (sig : Signature) : Signature :=
+  ⟨sig.R, -sig.S⟩
+
+/-! ## Binding signature (BindingSig)
+
+Orchard also uses RedPallas for `BindingSig`, which proves balance of value
+commitments. The algorithm is identical to `SpendAuthSig` but uses a
+different generator `BindingG`. -/
+
+/-- The generator point for BindingSig (value commitment randomness base).
+
+Distinct from `G` (the SpendAuthSig generator). -/
+axiom BindingG : Pallas.toAffine.Point
+
+/-- The binding generator is not the identity point. -/
+axiom BindingG_ne_zero : BindingG ≠ 0
+
 end
 
 end RedPallas
