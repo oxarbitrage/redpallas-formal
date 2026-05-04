@@ -83,6 +83,14 @@ theorem keygen_sub (a b : Pasta.Fq) :
     keygen (a - b) = keygen a - keygen b := by
   unfold keygen; rw [fqSmul_sub]
 
+/-- `keygen` respects scalar multiplication: `keygen(a·b) = a ⬝ keygen(b)`.
+
+This is the module homomorphism property of key generation: scaling the secret
+key by a scalar `a` is the same as scalar-multiplying the public key by `a`.
+Used when composing key derivation paths. -/
+theorem keygen_mul (a b : Pasta.Fq) : keygen (a * b) = fqSmul a (keygen b) := by
+  unfold keygen; exact fqSmul_mul a b G
+
 /-- `keygen(0)` is the identity point. -/
 @[simp]
 theorem keygen_zero : keygen 0 = (0 : Pallas.toAffine.Point) := by
