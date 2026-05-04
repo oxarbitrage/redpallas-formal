@@ -1,6 +1,6 @@
 # redpallas-formal
 
-Lean 4 formalization of the [RedPallas](https://zips.z.cash/protocol/protocol.pdf) signature scheme used in Zcash's [Orchard](https://zcash.github.io/orchard/) protocol.
+Lean 4 formalization of the [RedPallas](https://zips.z.cash/protocol/protocol.pdf#concretereddsa) signature scheme used in Zcash's [Orchard](https://zcash.github.io/orchard/) protocol.
 
 **Status: fully proven — zero `sorry`.**
 
@@ -33,7 +33,7 @@ All definitions and theorems live under the `RedPallas` namespace. Built on top 
 
 ## Security argument
 
-RedPallas is an instantiation of RedDSA (§5.4.7 of the Zcash protocol spec) over the Pallas curve:
+RedPallas is an instantiation of [RedDSA](https://zips.z.cash/protocol/protocol.pdf#concretereddsa) (§5.4.7 of the Zcash protocol specification) over the Pallas curve:
 
 1. **Verification correctness** (proven): `[r + c·sk]·G = [r]·G + [c]·([sk]·G)` by linearity of scalar multiplication.
 2. **Re-randomization** (proven): key re-randomization preserves the keygen relationship and signature validity, enabling Zcash's spend authorization privacy.
@@ -58,7 +58,10 @@ lake build     # builds in ~10 seconds after cache download
 
 ## References
 
-- [Zcash protocol specification, §5.4.7](https://zips.z.cash/protocol/protocol.pdf) — RedDSA/RedPallas specification
+- [Zcash Protocol Specification §5.4.7](https://zips.z.cash/protocol/protocol.pdf#concretereddsa) — RedDSA/RedPallas specification
 - [zcash/orchard](https://github.com/zcash/orchard) — Rust implementation
 - [pasta-formal](https://github.com/oxarbitrage/pasta-formal) — Pallas/Vesta Lean 4 formalization
-- [sinsemilla-formal](https://github.com/oxarbitrage/sinsemilla-formal) — Sinsemilla hash Lean 4 formalization
+
+## License
+
+MIT
