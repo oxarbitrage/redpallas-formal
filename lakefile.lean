@@ -7,8 +7,8 @@ package RedPallasFormal where
 @[default_target]
 lean_lib RedPallas where
 
-require mathlib from git
-  "https://github.com/leanprover-community/mathlib4"
-
 require pasta_formal from git
-  "https://github.com/oxarbitrage/pasta-formal"
+  "https://github.com/oxarbitrage/pasta-formal" @ "main"
+
+require mathlib from git
+  "https://github.com/leanprover-community/mathlib4" @ "5450b53e5ddc75d46418fabb605edbf36bd0beb6"

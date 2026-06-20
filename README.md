@@ -9,8 +9,10 @@ Lean 4 formalization of the RedPallas signature scheme (RedDSA over Pallas) used
 - **`verify_sign`** — honest signatures always verify: [r + c·sk]·G = R + [c]·vk.
 - **`verify_rerandomized`** — signing with sk+α verifies against vk+[α]·G.
 - **`keygen_add`** — key generation is a group homomorphism: keygen(a+b) = keygen(a) + keygen(b).
+- **`two_fork_extract`** — Schnorr two-fork key extraction: from two valid transcripts with the same commitment but different challenges, extract the discrete log of the verification key.
+- **`binding_extractability`** — specialization to BindingSig: extracts `bsk` such that `bvk = [bsk]·BindingG`, matching the shape of [Ironwood](https://github.com/zcash/ironwood)'s `hExtract` hypothesis.
 
-Unforgeability (EUF-CMA) is **not** formalized — it requires a random oracle model not yet in Lean/Mathlib.
+Unforgeability (EUF-CMA) is **not** formalized — it requires a random oracle model not yet in Lean/Mathlib. The extractability theorems above prove the algebraic core; the forking lemma (Pointcheval–Stern) that produces the two transcripts in the ROM is not yet formalized.
 
 ## Axioms
 
